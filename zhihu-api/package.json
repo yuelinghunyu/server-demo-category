@@ -1,0 +1,22 @@
+{
+  "name": "zhihu-api",
+  "version": "1.0.0",
+  "description": "koa restful api for zhihu",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "keywords": [
+    "api",
+    "zhihui",
+    "koa"
+  ],
+  "author": "djjiang",
+  "license": "ISC",
+  "dependencies": {
+    "koa": "^2.7.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.1"
+  }
+}
