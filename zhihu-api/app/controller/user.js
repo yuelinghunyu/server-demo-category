@@ -6,7 +6,12 @@ class UsersCtl {
     ctx.body = await User.find()
   }
   async findById(ctx) {
-    const user = await User.findById(ctx.params.id)
+    const { fields } = ctx.query
+    console.log(fields)
+    const selectFields = fields&&Object.keys(fields).length && fields.split(";").filter(f => f).map(f => "+" + f).join("")
+    console.log(selectFields)
+    const user = await User.findById(ctx.params.id).select(selectFields)
+    // const user = await User.findById(ctx.params.id).select("+gender+employments")
     if(!user) {
       ctx.throw(404, '用户不存在')
     }
@@ -28,7 +33,14 @@ class UsersCtl {
   async update(ctx) { // 更新用户
     ctx.verifyParams({
       name: { type: 'string', require: false },
-      password: { type: 'string', require: false }
+      password: { type: 'string', require: false },
+      avatar_url: { type: 'string', require: false },
+      gender: { type: 'string', require: false },
+      headline: { type: 'string', require: false },
+      locations: { type: 'array', itemType: 'string', require: false },
+      business: { type: 'string', require: false },
+      employments: { type: 'array', itemType: 'object', require: false },
+      educations: { type: 'array', itemType: 'object', require: false }
     })
     const user = await User.findByIdAndUpdate(ctx.params.id, ctx.request.body)
     if(!user) {
