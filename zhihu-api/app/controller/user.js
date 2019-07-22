@@ -77,6 +77,36 @@ class UsersCtl {
     if(!user) { ctx.throw(404) }
     ctx.body = user.following
   }
+ 
+  async checkUserExist(ctx, next) {
+    const user = await user.findById(ctx.params.id)
+    if(!user) { ctx.throw(404, '用户不存在') }
+    await next()
+  }
+
+  async follow(ctx) {
+    const me = await User.findById(ctx.state.user._id).select("+following")
+    if(!me.following.map(id => id.toString()).includes(ctx.params.id)) {
+      me.following.push(ctx.params.id)
+      me.save()
+    }
+    ctx.status = 204
+  }
+
+  async unFollow(ctx) {
+    const me = await User.findById(ctx.state.user._id).select("+following")
+    const index = me.following.map(id => id.toString()).indexOf(ctx.params.id)
+    if(index > -1) {
+      me.following.splice(index, 1)
+      me.save()
+    }
+    ctx.status = 204
+  }
+
+  async listFollowers (ctx) {
+    const users = await User.find({following: ctx.params.id})
+    ctx.body = users
+  }
 }
 
 module.exports = new UsersCtl()
