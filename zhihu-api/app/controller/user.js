@@ -71,6 +71,12 @@ class UsersCtl {
     if(ctx.params.id !== ctx.state.user._id) { ctx.throw(403, '没有权限') }
     await next()
   }
+
+  async listFollowing(ctx) {
+    const user = await User.findById(ctx.params.id).select('+following').populate('following')
+    if(!user) { ctx.throw(404) }
+    ctx.body = user.following
+  }
 }
 
 module.exports = new UsersCtl()
